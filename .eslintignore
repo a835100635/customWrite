@@ -1,0 +1,11 @@
+public
+dist
+bin
+node_module
+.eslintrc.js
+rollup.config.js
+*.html
+__test__/**/*
+/type.ts
+reports/**/*
+test-dts
