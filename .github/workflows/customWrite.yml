@@ -21,7 +21,7 @@ jobs:
         with:
           node-version: '14'
       - name: List files in the repository
-      - run: |
+        run: |
           ls ${{ github.workspace }}
       - run: npm install
       - run: npm run build
