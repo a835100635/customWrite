@@ -8,6 +8,7 @@ on:
     # 分支
     branches:
       - master
+      - dev
 jobs:
   # 任务名称
   Deploy-CustomWrite:
@@ -15,5 +16,9 @@ jobs:
     runs-on: ubuntu-latest
     # 步骤 每个 job 由多个 step 构成，一步步完成
     steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
       - run: npm install
       - run: npm run build
