@@ -1,0 +1,19 @@
+#  workflow 的名称
+name: customWrite
+run-name: 页面部署 🚀
+# on 指定触发事件时，可以限定分支或标签。
+on: 
+  # push 操作会触发
+  push:
+    # 分支
+    branches:
+      - master
+jobs:
+  # 任务名称
+  Deploy-CustomWrite:
+    # 指定运行所需要的虚拟机环境
+    runs-on: ubuntu-latest
+    # 步骤 每个 job 由多个 step 构成，一步步完成
+    steps:
+      - run: npm install
+      - run: npm run build
