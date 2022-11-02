@@ -1,5 +1,7 @@
 type EleType = HTMLElement;
 type LineWidthType = number;
+type StrokeStyleType = string | CanvasGradient | CanvasPattern;
+type LineJoinType = CanvasLineJoin;
 
 type Canvas2dType = CanvasRenderingContext2D;
 type CtxType = Canvas2dType | null;
@@ -15,8 +17,14 @@ type LocationType = {
 
 export interface OptionsType {
   el: EleType;
-  attr: AttrType;
-  lineWidth: LineWidthType
+  attr?: AttrType;
+  lineWidth?: LineWidthType;
+  strokeStyle?: StrokeStyleType;
+  lineJoin?: LineJoinType
+}
+
+export interface RestOptionsType {
+  [key: string]: string | number | boolean | AttrType;
 }
 
 class Base {
@@ -30,23 +38,25 @@ class Base {
   protected ctx: CtxType;
   // 线条宽度
   protected lineWidth: LineWidthType;
+  // 线条颜色
+  protected strokeStyle: StrokeStyleType;
+  protected lineJoin: LineJoinType;
   // 鼠标移动最后的位置
   protected lastLocation: LocationType;
 
   // 鼠标是否被按下
   protected isMouseDown: Boolean;
 
-  public options: OptionsType
-
   constructor(options: OptionsType) {
-    const { el, attr, lineWidth } = options;
-    this.options = options;
+    const { el, attr, lineWidth, strokeStyle, lineJoin } = options;
     if (!el || !(el instanceof HTMLElement)) {
       throw new Error('el 未传入”HTMLElement“类型元素');
     }
     this.el = el;
-    this.attr = attr;
+    this.attr = attr || {};
     this.lineWidth = lineWidth || 10;
+    this.strokeStyle = strokeStyle || 'black';
+    this.lineJoin = lineJoin || 'round';
     // 最后的位置
     this.lastLocation = {
       x: 0,
@@ -62,11 +72,11 @@ class Base {
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d');
     // 初始化鼠标事件
-    this.initEvent();
+    this.initEventAction();
   }
 
   // 创建canvas元素
-  createEle() {
+  private createEle() {
     const { el, attr } = this;
     const { clientWidth, clientHeight } = el;
     const can = document.createElement('canvas');
@@ -84,7 +94,7 @@ class Base {
   }
 
   // 初始化事件监听
-  initEvent() {
+  protected initEventAction() {
     const { canvas } = this;
     const self = this;
     // 鼠标按下
@@ -136,20 +146,25 @@ class Base {
 
   // 画线事件
   private draw(e: MouseEvent) {
-    const { ctx, lineWidth, lastLocation } = this; 
+    const { ctx, lineWidth, strokeStyle, lastLocation, lineJoin } = this; 
     const { x, y } = this.location(e);
 
     if(!ctx) return; 
     // 设置线宽度
     ctx.lineWidth = lineWidth;
 
-    // 
+    // 新路径
     ctx.beginPath();
+    // 开始位置
     ctx.moveTo(lastLocation.x,lastLocation.y);
+    // 结束位置
     ctx.lineTo(x, y);
-    ctx.strokeStyle = 'red';
-    ctx.lineCap = "round"
-    ctx.lineJoin = "round"
+    // 线条颜色
+    ctx.strokeStyle = strokeStyle;
+    ctx.lineCap = "round";
+
+    ctx.lineJoin = lineJoin;
+    // 将起点和终点连接起来
     ctx.stroke();
 
     Object.assign(lastLocation, { x, y });
@@ -183,6 +198,35 @@ class Base {
     return this.canvas.toDataURL('image/png');
   }
 
+  // 刷新画布大小
+  protected refreshSize():void {
+    const { el, canvas, attr } = this;
+    const { clientWidth, clientHeight } = el;
+    const { width = 0, height = 0 } = attr;
+    // 默认width height 继承父级
+    canvas.width = width as number || clientWidth;
+    canvas.height = height as number || clientHeight;
+  }
+
+  // 重置属性
+  protected resetOptionsAction(options: RestOptionsType):void {
+    for(const key of Object.keys(options)) {
+      // 过滤没有的属性
+      if(!(key in this)) return;
+      Object.assign(this, {
+        [key]: options[`${key}`]
+      })
+    }
+  }
+
+  // 消灭监听
+  protected destroyedAction() {
+    this.canvas.onmousedown = null;
+    this.canvas.onmouseup = null;
+    this.canvas.onmouseenter = null;
+    this.canvas.onmouseleave = null;
+    document.onmouseup = null;
+  }
 }
 
 class CWrite extends Base {
@@ -194,12 +238,30 @@ class CWrite extends Base {
     this.clearRectAction();
   }
 
-  canvasToImage() {
+  canvasToImage(): string {
     return this.convertCanvasToImage();
+  }
+
+  refresh() {
+    this.refreshSize();
+  }
+
+  resetOptions(options: RestOptionsType) {
+    this.resetOptionsAction(options);
+  }
+
+  initEvent() {
+    this.initEventAction()
+  }
+
+  destroyed() {
+    this.destroyedAction();
   }
 
 }
 // 挂载window之上
-Object.assign(window, {
-  CWrite
-});
+// Object.assign(window, {
+//   CWrite
+// });
+
+export default CWrite

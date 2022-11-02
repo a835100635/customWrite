@@ -4,14 +4,15 @@
 
 class Base {
     constructor(options) {
-        const { el, attr, lineWidth } = options;
-        this.options = options;
+        const { el, attr, lineWidth, strokeStyle, lineJoin } = options;
         if (!el || !(el instanceof HTMLElement)) {
             throw new Error('el 未传入”HTMLElement“类型元素');
         }
         this.el = el;
-        this.attr = attr;
+        this.attr = attr || {};
         this.lineWidth = lineWidth || 10;
+        this.strokeStyle = strokeStyle || 'black';
+        this.lineJoin = lineJoin || 'round';
         this.lastLocation = {
             x: 0,
             y: 0
@@ -23,7 +24,7 @@ class Base {
         }
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
-        this.initEvent();
+        this.initEventAction();
     }
     createEle() {
         const { el, attr } = this;
@@ -37,7 +38,7 @@ class Base {
         el.appendChild(can);
         return can;
     }
-    initEvent() {
+    initEventAction() {
         const { canvas } = this;
         const self = this;
         canvas.onmousedown = function (e) {
@@ -69,7 +70,7 @@ class Base {
         };
     }
     draw(e) {
-        const { ctx, lineWidth, lastLocation } = this;
+        const { ctx, lineWidth, strokeStyle, lastLocation, lineJoin } = this;
         const { x, y } = this.location(e);
         if (!ctx)
             return;
@@ -77,9 +78,9 @@ class Base {
         ctx.beginPath();
         ctx.moveTo(lastLocation.x, lastLocation.y);
         ctx.lineTo(x, y);
-        ctx.strokeStyle = 'red';
+        ctx.strokeStyle = strokeStyle;
         ctx.lineCap = "round";
-        ctx.lineJoin = "round";
+        ctx.lineJoin = lineJoin;
         ctx.stroke();
         Object.assign(lastLocation, { x, y });
     }
@@ -105,6 +106,29 @@ class Base {
     convertCanvasToImage() {
         return this.canvas.toDataURL('image/png');
     }
+    refreshSize() {
+        const { el, canvas, attr } = this;
+        const { clientWidth, clientHeight } = el;
+        const { width = 0, height = 0 } = attr;
+        canvas.width = width || clientWidth;
+        canvas.height = height || clientHeight;
+    }
+    resetOptionsAction(options) {
+        for (const key of Object.keys(options)) {
+            if (!(key in this))
+                return;
+            Object.assign(this, {
+                [key]: options[`${key}`]
+            });
+        }
+    }
+    destroyedAction() {
+        this.canvas.onmousedown = null;
+        this.canvas.onmouseup = null;
+        this.canvas.onmouseenter = null;
+        this.canvas.onmouseleave = null;
+        document.onmouseup = null;
+    }
 }
 class CWrite extends Base {
     constructor(options) {
@@ -116,7 +140,18 @@ class CWrite extends Base {
     canvasToImage() {
         return this.convertCanvasToImage();
     }
+    refresh() {
+        this.refreshSize();
+    }
+    resetOptions(options) {
+        this.resetOptionsAction(options);
+    }
+    initEvent() {
+        this.initEventAction();
+    }
+    destroyed() {
+        this.destroyedAction();
+    }
 }
-Object.assign(window, {
-    CWrite
-});
+
+module.exports = CWrite;

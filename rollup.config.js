@@ -40,17 +40,17 @@ export default {
     {
       file: './dist/lib.js',
       format: 'umd',
-      name: 'cWrite',
+      name: 'CWrite',
     },
     {
       file: './dist/lib.esm.js',
       format: 'es',
-      name: 'cWrite'
+      name: 'CWrite'
     },
     {
       file: './dist/lib.umd.js',
       format: 'cjs',
-      name: 'cWrite'
+      name: 'CWrite'
     }
   ],
   plugins: [
