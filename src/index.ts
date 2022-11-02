@@ -173,14 +173,14 @@ class Base {
   }
 
   // 清空画布
-  clearRectAction() {
-    let { width, height } = this.options.attr || {};
-    if (!width || !height) {
-      const config = this.canvas.getBoundingClientRect();
-      width = config.width;
-      height = config.height;
-    }
+  protected clearRectAction() {
+    let { width, height } =  this.canvas.getBoundingClientRect();
     this.ctx?.clearRect(0, 0, width as number, height as number );
+  }
+
+  // 画布导出图片
+  protected convertCanvasToImage(): string {
+    return this.canvas.toDataURL('image/png');
   }
 }
 
@@ -192,6 +192,11 @@ class CWrite extends Base {
   clearRect() {
     this.clearRectAction();
   }
+
+  canvasToImage() {
+    return this.convertCanvasToImage();
+  }
+
 }
 // 挂载window之上
 Object.assign(window, {

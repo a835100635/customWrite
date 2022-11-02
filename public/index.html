@@ -20,6 +20,9 @@
       width: 400px;
       border: 1px solid #ccc;
     }
+    #img {
+      box-shadow:0px 0px 7px #333333;
+    }
   </style>
 </head>
 
@@ -27,6 +30,10 @@
   <div id="app"></div>
   <p>
     <button onclick="handleClearRect()">清空</button>
+    <button onclick="handleToImage()">导出图片</button>
+  </p>
+  <p>
+    <img id="img" src="" alt="">
   </p>
   <script src="../dist/lib.js"></script>
   <script>
@@ -47,6 +54,16 @@
       console.log('清空画布---->')
       cWrite.clearRect()
     }
+
+    function handleToImage() {
+      console.log('导出图片---->')
+      const imgB = cWrite.canvasToImage()
+      const img = document.querySelector('#img')
+      img.style.width = '400px';
+      img.style.height = '300px';
+      img.src = imgB;
+    }
+
   </script>
 </body>
 
