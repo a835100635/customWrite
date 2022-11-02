@@ -8,6 +8,7 @@ on:
     # 分支
     branches:
       - master
+      - dev
 jobs:
   # 任务名称
   Deploy-CustomWrite:
@@ -15,5 +16,23 @@ jobs:
     runs-on: ubuntu-latest
     # 步骤 每个 job 由多个 step 构成，一步步完成
     steps:
+      # 使用checkout@v2这个action获取源码
+      - uses: actions/checkout@v2
+      # 使用建一个名为setup-node的步骤
+      - uses: actions/setup-node@v2
+      # 指定某个action 可能需要输入的参数
+        with:
+          # 安装node 版本14
+          node-version: '14'
+      # 下载依赖
       - run: npm install
+      # 打包
       - run: npm run build
+      # 复制文件
+      - run: cp ./dist/lib.js ./lib.js
+      # name步骤名称，步骤的名称。
+      - name: List files in the repository
+        # 查看目录结构
+        run: |
+          ls ${{ github.workspace }}
+      - run: echo "🍏 This job's status is ${{ job.status }}."

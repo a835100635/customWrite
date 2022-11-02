@@ -6,6 +6,7 @@ import replace from 'rollup-plugin-replace';
 import livereload from 'rollup-plugin-livereload';
 import serve from 'rollup-plugin-serve';
 import filesize from 'rollup-plugin-filesize';
+// import html from('@rollup/plugin-html')
 
 import resolve from '@rollup/plugin-node-resolve';
 import typescript from '@rollup/plugin-typescript';
@@ -37,17 +38,17 @@ export default {
   input: './src/index.ts',
   output: [
     {
-      file: 'dist/lib.js',
+      file: './dist/lib.js',
       format: 'umd',
       name: 'cWrite',
     },
     {
-      file: 'dist/lib.esm.js',
+      file: './dist/lib.esm.js',
       format: 'es',
       name: 'cWrite'
     },
     {
-      file: 'dist/lib.umd.js',
+      file: './dist/lib.umd.js',
       format: 'cjs',
       name: 'cWrite'
     }
@@ -59,10 +60,10 @@ export default {
     resolve(),
     typescript(),
     commonjs(),
-    
     replace({
       'process.env.NODE_ENV': JSON.stringify(NODE_ENV)
     }),
     ...envPlugins,
+    
   ],
 }
