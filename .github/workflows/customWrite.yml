@@ -27,7 +27,8 @@ jobs:
       # 下载依赖
       - run: npm install
       # 打包
-      - run: npm run build、
+      - run: npm run build
+      # 复制文件
       - run: cp ./dist/lib.js ./lib.js
       # name步骤名称，步骤的名称。
       - name: List files in the repository
