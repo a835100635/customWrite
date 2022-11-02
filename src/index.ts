@@ -36,8 +36,11 @@ class Base {
   // 鼠标是否被按下
   protected isMouseDown: Boolean;
 
+  public options: OptionsType
+
   constructor(options: OptionsType) {
     const { el, attr, lineWidth } = options;
+    this.options = options;
     if (!el || !(el instanceof HTMLElement)) {
       throw new Error('el 未传入”HTMLElement“类型元素');
     }
@@ -154,25 +157,40 @@ class Base {
   }
 
   // 获取canvas元素位置
-  private location(e: MouseEvent): LocationType {
-    const { clientX, clientY } = e;
+  private location(e?: MouseEvent): LocationType {
     const { left, top } = this.canvas.getBoundingClientRect();
+    if (!e) {
+      return {
+        x: left,
+        y: top
+      }
+    }
+    const { clientX, clientY } = e;
     return {
       x: clientX - left,
       y: clientY - top
     }
+  }
+
+  // 清空画布
+  clearRectAction() {
+    let { width, height } = this.options.attr || {};
+    if (!width || !height) {
+      const config = this.canvas.getBoundingClientRect();
+      width = config.width;
+      height = config.height;
+    }
+    this.ctx?.clearRect(0, 0, width as number, height as number );
   }
 }
 
 class CWrite extends Base {
   constructor(options: OptionsType) {
     super(options);
-    this.init();
   }
 
-  // 初始化
-  init() {
-    return {};
+  clearRect() {
+    this.clearRectAction();
   }
 }
 // 挂载window之上
