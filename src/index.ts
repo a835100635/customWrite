@@ -178,10 +178,11 @@ class Base {
     this.ctx?.clearRect(0, 0, width as number, height as number );
   }
 
-  // 画布导出图片
+  // 画布导出图片 默认导出 base64
   protected convertCanvasToImage(): string {
     return this.canvas.toDataURL('image/png');
   }
+
 }
 
 class CWrite extends Base {
