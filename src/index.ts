@@ -1,16 +1,16 @@
-type EleType = HTMLElement;
-type LineWidthType = number;
-type StrokeStyleType = string | CanvasGradient | CanvasPattern;
-type LineJoinType = CanvasLineJoin;
+export type EleType = HTMLElement;
+export type LineWidthType = number;
+export type StrokeStyleType = string | CanvasGradient | CanvasPattern;
+export type LineJoinType = CanvasLineJoin;
 
-type Canvas2dType = CanvasRenderingContext2D;
-type CtxType = Canvas2dType | null;
+export type Canvas2dType = CanvasRenderingContext2D;
+export type CtxType = Canvas2dType | null;
 
-interface AttrType {
+export interface AttrType {
   [key: string]: string | number | boolean;
 }
 
-type LocationType = {
+export type LocationType = {
   x: number;
   y: number;
 }
