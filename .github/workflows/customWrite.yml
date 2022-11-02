@@ -29,10 +29,16 @@ jobs:
       # 打包
       - run: npm run build
       # 复制文件
-      - run: cp ./dist/lib.js ./lib.js
+      - run: cp ./dist/lib.js ./public/lib.js
       # name步骤名称，步骤的名称。
       - name: List files in the repository
         # 查看目录结构
+        run: |
+          ls ${{ github.workspace }}
+      # name步骤名称，步骤的名称。
+      - name: List files in the public
+        # 查看目录结构
+        run: cd public
         run: |
           ls ${{ github.workspace }}
       - run: echo "🍏 This job's status is ${{ job.status }}."
