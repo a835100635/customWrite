@@ -20,9 +20,9 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: '14'
+      - run: npm install
+      - run: npm run build
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
-      - run: npm install
-      - run: npm run build
       - run: echo "🍏 This job's status is ${{ job.status }}."
