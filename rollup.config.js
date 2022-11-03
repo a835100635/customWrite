@@ -1,12 +1,9 @@
 import babel from 'rollup-plugin-babel';
-// import commonjs from 'rollup-plugin-commonjs';
 import { terser } from 'rollup-plugin-terser';
-// import nodeResolve from 'rollup-plugin-node-resolve';
 import replace from 'rollup-plugin-replace';
 import livereload from 'rollup-plugin-livereload';
 import serve from 'rollup-plugin-serve';
 import filesize from 'rollup-plugin-filesize';
-// import html from('@rollup/plugin-html')
 
 import resolve from '@rollup/plugin-node-resolve';
 import typescript from '@rollup/plugin-typescript';
@@ -27,7 +24,7 @@ if (isProd) {
     serve({
       open: true,
       openPage: '/public/index.html',
-      port: 3000,
+      port: 3001,
       contentBase: './'
     }),
   ]
@@ -38,17 +35,17 @@ export default {
   input: './src/index.ts',
   output: [
     {
-      file: './dist/lib.js',
+      file: './dist/CWrite.js',
       format: 'umd',
       name: 'CWrite',
     },
     {
-      file: './dist/lib.esm.js',
+      file: './dist/CWrite.esm.js',
       format: 'es',
       name: 'CWrite'
     },
     {
-      file: './dist/lib.umd.js',
+      file: './dist/CWrite.umd.js',
       format: 'cjs',
       name: 'CWrite'
     }
