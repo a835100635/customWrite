@@ -5,28 +5,67 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>lib</title>
+  <title>canvas 写字板</title>
   <style>
     html, body {
       height: 100%;
       width: 100%;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
     }
     #app {
-      height: 300px;
-      width: 400px;
+      height: 50%;
+      width: 60%;
       border: 1px solid #ccc;
+    }
+    #img {
+      box-shadow:0px 0px 7px #333333;
     }
   </style>
 </head>
 
 <body>
+  <p s>
+    画笔粗细: 
+    <select name="" id="select" onchange="change()">
+      <option value="1" selected>1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+      <option value="6">6</option>
+      <option value="7">7</option>
+      <option value="8">8</option>
+      <option value="9">9</option>
+      <option value="10">10</option>
+    </select>
+    画笔颜色:
+    <input type="color" value="red" id="input" onchange="colorChange()">
+    拐角样式：
+    <select name="" id="lineJoin" onchange="lineJoinChange()">
+      <option value="miter">默认</option>
+      <option value="round" selected>圆角</option>
+      <option value="bevel">斜角</option>
+    </select>
+
+
+  </p>
   <div id="app"></div>
+  <p>
+    <button onclick="init()">init</button>
+    <button onclick="destroyed()">destroyed</button>
+    <button onclick="handleClearRect()">清空画布</button>
+    <button onclick="handleToImage()">导出图片</button>
+  </p>
+  <p>
+    <img id="img" src="" alt="">
+  </p>
   <script src="../dist/lib.js"></script>
-  <script src="./lib.js"></script>
   <script>
+    const params = {}
+
     const cWrite = new CWrite({
       el: document.querySelector('#app'),
       attr: {
@@ -36,8 +75,69 @@
         // height: 100,
       },
       lineWidth: 1,
-
     })
+    console.log('cWrite--', cWrite)
+
+    function init() {
+      console.log('init event ---->')
+      cWrite.initEvent()
+    }
+
+    function destroyed() {
+      console.log('destroyed ---->')
+      cWrite.destroyed()
+    }
+
+    function handleClearRect() {
+      console.log('清空画布---->')
+      cWrite.clearRect()
+    }
+
+    function handleToImage() {
+      console.log('导出图片---->')
+      const imgB = cWrite.canvasToImage()
+      const img = document.querySelector('#img')
+      console.log(imgB)
+      img.style.width = '400px';
+      img.style.height = '300px';
+      img.src = imgB;
+
+      document.createElement
+      document.body.appendChild
+    }
+
+    window.addEventListener('resize', () => {
+      console.log('resize-->')
+      cWrite.refresh();
+    });
+
+    // 重置样式
+    function resetOptions() {
+      cWrite.resetOptions(params)
+    }
+
+    function change() {
+      const value = document.querySelector('#select').value
+      console.log(value)
+      params.lineWidth = value;
+      resetOptions();
+    }
+
+    function colorChange() {
+      const value = document.querySelector('#input').value
+      console.log(value)
+      params.strokeStyle = value;
+      resetOptions();
+    }
+
+    function lineJoinChange() {
+      const value = document.querySelector('#lineJoin').value
+      console.log(value)
+      params.lineJoin = value;
+      resetOptions();
+    }
+
+
   </script>
 </body>
 
