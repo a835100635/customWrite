@@ -11,7 +11,7 @@
 ## 安装
 #### npm
 ```javascript
-$ npm install CWrite
+$ npm install c-write
 ```
 #### 直接安装
 ```javascript

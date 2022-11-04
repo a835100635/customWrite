@@ -14,7 +14,7 @@
             }
             this.el = el;
             this.attr = attr || {};
-            this.lineWidth = lineWidth || 10;
+            this.lineWidth = lineWidth || 1;
             this.strokeStyle = strokeStyle || 'black';
             this.lineJoin = lineJoin || 'round';
             this.lastLocation = {
@@ -134,6 +134,7 @@
             document.onmouseup = null;
         }
     }
+
     class CWrite extends Base {
         constructor(options) {
             super(options);

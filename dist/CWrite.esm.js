@@ -1,7 +1,5 @@
 
 (function(l, r) { if (!l || l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (self.location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(self.document);
-'use strict';
-
 class Base {
     constructor(options) {
         const { el, attr, lineWidth, strokeStyle, lineJoin } = options;
@@ -10,7 +8,7 @@ class Base {
         }
         this.el = el;
         this.attr = attr || {};
-        this.lineWidth = lineWidth || 10;
+        this.lineWidth = lineWidth || 1;
         this.strokeStyle = strokeStyle || 'black';
         this.lineJoin = lineJoin || 'round';
         this.lastLocation = {
@@ -130,6 +128,7 @@ class Base {
         document.onmouseup = null;
     }
 }
+
 class CWrite extends Base {
     constructor(options) {
         super(options);
@@ -154,4 +153,4 @@ class CWrite extends Base {
     }
 }
 
-module.exports = CWrite;
+export { CWrite as default };

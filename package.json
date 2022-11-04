@@ -1,36 +1,48 @@
 {
-  "name": "customwrite",
+  "name": "cg-write",
   "version": "1.0.0",
   "description": "",
   "type": "module",
-  "main": "./src/index.ts",
+  "main": "./dist/CWrite.js",
+  "unpkg": "./dist/CWrite.js",
+  "typings": "./src/base/type.ts",
+  "files": [
+    "dist/*",
+    "src/*"
+  ],
+  "sideEffects": false,
   "scripts": {
     "dev": "cross-env NODE_ENV=development rollup -wc",
     "build": "cross-env NODE_ENV=production rollup -c",
+    "pub": "npm run build && npm publish",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "leonli",
   "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.19.6",
     "@babel/preset-env": "^7.19.4",
     "@rollup/plugin-commonjs": "^23.0.2",
-    "@rollup/plugin-html": "^1.0.0",
     "@rollup/plugin-node-resolve": "^15.0.1",
     "@rollup/plugin-typescript": "^9.0.2",
+    "@typescript-eslint/eslint-plugin": "^5.42.0",
     "@typescript-eslint/parser": "^5.42.0",
     "cross-env": "^7.0.3",
     "eslint": "^8.26.0",
     "prettier": "^2.7.1",
     "rollup": "^3.2.3",
     "rollup-plugin-babel": "^4.4.0",
-    "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-filesize": "^9.1.2",
     "rollup-plugin-livereload": "^2.0.5",
-    "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-replace": "^2.2.0",
     "rollup-plugin-serve": "^2.0.1",
     "rollup-plugin-terser": "^7.0.2",
     "typescript": "^4.8.4"
-  }
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "keywords": [
+    "canvas"
+  ]
 }
