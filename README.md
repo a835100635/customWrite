@@ -178,7 +178,6 @@ cWrite.refresh();
  });
 ```
 
-
 #### 销毁画布监听事件
 画布监听还是依赖与原生事件监听，为了垃圾回收机制还是考虑一下销毁事件监听
 ```javascript
@@ -192,3 +191,14 @@ cWrite.destroyed();
 cWrite.initEvent();
 ```
 调用后发现画布活动又可正常操作
+
+
+#### 橡皮擦功能
+橡皮擦功能还是经常用到的，但是没有内置默认的橡皮擦功能，但是可以把颜色设置为白色，
+线条变粗一些，这样简易的橡皮擦功能就好了，利用 **resetOptions** 函数操作
+```javascript
+cWrite.resetOptions({
+  lineWidth: 10,
+  strokeStyle: '#fff'
+})
+```
