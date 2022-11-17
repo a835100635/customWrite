@@ -72,10 +72,25 @@ class Base {
             }
             console.log('onmouseup-----', self.undoList);
         };
+        canvas.ontouchstart = (e) => {
+            e.preventDefault();
+            self.isMouseDown = true;
+            const { x, y } = self.location(e, 'touch');
+            Object.assign(self.lastLocation, { x, y });
+            canvas.ontouchmove = (e) => {
+                e.preventDefault();
+                self.draw(e, 'touch');
+            };
+        };
+        canvas.ontouchend = (e) => {
+            e.preventDefault();
+            self.isMouseDown = false;
+            canvas.ontouchmove = null;
+        };
     }
-    draw(e) {
+    draw(e, type) {
         const { ctx, lineWidth, strokeStyle, lastLocation, lineJoin } = this;
-        const { x, y } = this.location(e);
+        const { x, y } = this.location(e, type);
         if (!ctx)
             return;
         ctx.lineWidth = lineWidth;
@@ -88,7 +103,7 @@ class Base {
         ctx.stroke();
         Object.assign(lastLocation, { x, y });
     }
-    location(e) {
+    location(e, type) {
         const { left, top } = this.canvas.getBoundingClientRect();
         if (!e) {
             return {
@@ -96,7 +111,14 @@ class Base {
                 y: top
             };
         }
-        const { clientX, clientY } = e;
+        let ev = e;
+        if (type && type === 'touch') {
+            ev = {
+                clientX: e.touches[0].pageX,
+                clientY: e.touches[0].pageY,
+            };
+        }
+        const { clientX, clientY } = ev;
         return {
             x: clientX - left,
             y: clientY - top
@@ -127,9 +149,6 @@ class Base {
         }
     }
     handleCache() {
-        var _a, _b;
-        console.log('getImageData', (_a = this.ctx) === null || _a === void 0 ? void 0 : _a.getImageData(0, 0, this.canvas.width, this.canvas.height));
-        this.undoList.push((_b = this.ctx) === null || _b === void 0 ? void 0 : _b.getImageData(0, 0, this.canvas.width, this.canvas.height));
     }
     undoAction() {
         var _a;
@@ -141,14 +160,15 @@ class Base {
     }
     redoAction() {
     }
-    undoOrRedoOperate() {
-    }
     destroyedAction() {
         this.canvas.onmousedown = null;
         this.canvas.onmouseup = null;
         this.canvas.onmouseenter = null;
         this.canvas.onmouseleave = null;
         document.onmouseup = null;
+        this.canvas.ontouchstart = null;
+        this.canvas.ontouchmove = null;
+        this.canvas.ontouchend = null;
     }
 }
 

@@ -135,12 +135,38 @@ export default class Base {
       console.log('onmouseup-----', self.undoList);
     };
 
+    /**
+     * 移动端
+     */
+
+    // 当在屏幕上按下手指时触发
+    canvas.ontouchstart = (e: TouchEvent) => {
+      e.preventDefault();
+      self.isMouseDown = true;
+      // 记录按下去位置，作为开始位置
+      const { x, y } = self.location(e, 'touch');
+      Object.assign(self.lastLocation, { x, y });
+
+      // 移动
+      canvas.ontouchmove = (e: TouchEvent) => {
+        e.preventDefault();
+        self.draw(e, 'touch');
+      };
+    };
+    // 抬起
+    canvas.ontouchend = (e: TouchEvent) => {
+      e.preventDefault();
+      self.isMouseDown = false;
+      canvas.ontouchmove = null;
+    };
+
+
   }
 
   // 画线事件
-  private draw (e: MouseEvent) {
+  private draw (e: MouseEvent | TouchEvent, type?: string) {
     const { ctx, lineWidth, strokeStyle, lastLocation, lineJoin } = this; 
-    const { x, y } = this.location(e);
+    const { x, y } = this.location(e, type);
 
     if(!ctx) return; 
     // 设置线宽度
@@ -165,7 +191,7 @@ export default class Base {
   }
 
   // 获取canvas元素位置
-  private location (e?: MouseEvent): LocationType {
+  private location (e?: MouseEvent | TouchEvent, type?:string): LocationType {
     const { left, top } = this.canvas.getBoundingClientRect();
     if (!e) {
       return {
@@ -173,7 +199,15 @@ export default class Base {
         y: top
       };
     }
-    const { clientX, clientY } = e;
+    let ev: any = e;
+    if(type && type === 'touch') {
+      ev = {
+        clientX: (e as TouchEvent).touches[0].pageX,
+        clientY: (e as TouchEvent).touches[0].pageY,
+      };
+    }
+    const { clientX, clientY } = ev;
+
     return {
       x: clientX - left,
       y: clientY - top
@@ -236,13 +270,6 @@ export default class Base {
     // TODO: 
   }
 
-  // 
-  private undoOrRedoOperate () {
-    // TODO: 
-  }
-
-
-
 
   // 消灭监听
   protected destroyedAction () {
@@ -251,5 +278,9 @@ export default class Base {
     this.canvas.onmouseenter = null;
     this.canvas.onmouseleave = null;
     document.onmouseup = null;
+
+    this.canvas.ontouchstart = null;
+    this.canvas.ontouchmove = null;
+    this.canvas.ontouchend = null;
   }
 }
