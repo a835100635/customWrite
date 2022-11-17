@@ -54,8 +54,10 @@
   </p>
   <div id="app"></div>
   <p>
-    <button onclick="init()">init</button>
-    <button onclick="destroyed()">destroyed</button>
+    <button onclick="init()">initEvent</button>
+    <button onclick="destroyed()">destroyed event</button>
+    <button onclick="undo()">undo</button>
+    <button onclick="redo()">redo</button>
     <button onclick="handleClearRect()">清空画布</button>
     <button onclick="handleToImage()">导出图片</button>
   </p>
@@ -135,6 +137,14 @@
       console.log(value)
       params.lineJoin = value;
       resetOptions();
+    }
+
+    function undo () {
+      cWrite.undo();
+    }
+
+    function redo () {
+      cWrite.redo();
     }
 
 

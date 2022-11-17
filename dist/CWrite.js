@@ -29,6 +29,8 @@
             this.canvas = canvas;
             this.ctx = canvas.getContext('2d');
             this.initEventAction();
+            this.undoList = [];
+            this.redoList = [];
         }
         createEle() {
             const { el, attr } = this;
@@ -50,6 +52,7 @@
                 self.isMouseDown = true;
                 const { x, y } = self.location(e);
                 Object.assign(self.lastLocation, { x, y });
+                self.redoList = [];
                 canvas.onmousemove = function (e) {
                     e.preventDefault();
                     self.draw(e);
@@ -59,6 +62,7 @@
                 e.preventDefault();
                 self.isMouseDown = false;
                 canvas.onmousemove = null;
+                self.handleCache();
             };
             canvas.onmouseenter = function (e) {
                 const { x, y } = self.location(e);
@@ -70,7 +74,9 @@
                 if (self.isMouseDown) {
                     self.isMouseDown = false;
                     canvas.onmousemove = null;
+                    self.handleCache();
                 }
+                console.log('onmouseup-----', self.undoList);
             };
         }
         draw(e) {
@@ -83,7 +89,7 @@
             ctx.moveTo(lastLocation.x, lastLocation.y);
             ctx.lineTo(x, y);
             ctx.strokeStyle = strokeStyle;
-            ctx.lineCap = "round";
+            ctx.lineCap = 'round';
             ctx.lineJoin = lineJoin;
             ctx.stroke();
             Object.assign(lastLocation, { x, y });
@@ -104,7 +110,7 @@
         }
         clearRectAction() {
             var _a;
-            let { width, height } = this.canvas.getBoundingClientRect();
+            const { width, height } = this.canvas.getBoundingClientRect();
             (_a = this.ctx) === null || _a === void 0 ? void 0 : _a.clearRect(0, 0, width, height);
         }
         convertCanvasToImage() {
@@ -125,6 +131,23 @@
                     [key]: options[`${key}`]
                 });
             }
+        }
+        handleCache() {
+            var _a, _b;
+            console.log('getImageData', (_a = this.ctx) === null || _a === void 0 ? void 0 : _a.getImageData(0, 0, this.canvas.width, this.canvas.height));
+            this.undoList.push((_b = this.ctx) === null || _b === void 0 ? void 0 : _b.getImageData(0, 0, this.canvas.width, this.canvas.height));
+        }
+        undoAction() {
+            var _a;
+            const op = this.undoList.splice(this.undoList.length - 2, 1);
+            const image = new Image();
+            image.src = op[0];
+            (_a = this.ctx) === null || _a === void 0 ? void 0 : _a.drawImage(image, this.canvas.width, this.canvas.height);
+            this.redoList.push(...op);
+        }
+        redoAction() {
+        }
+        undoOrRedoOperate() {
         }
         destroyedAction() {
             this.canvas.onmousedown = null;
@@ -156,6 +179,12 @@
         }
         destroyed() {
             this.destroyedAction();
+        }
+        undo() {
+            this.undoAction();
+        }
+        redo() {
+            this.redoAction();
         }
     }
 
