@@ -12,7 +12,7 @@
   "plugins": ["@typescript-eslint"],
   "rules": {
     "@typescript-eslint/no-unused-vars": [
-      "error",
+      "warn",
       {
         "varsIgnorePattern": "^_"
       }
@@ -21,6 +21,9 @@
     "no-console": "warn",
     "space-before-function-paren": "warn",
     "semi": "warn",
-    "quotes": ["warn", "single"]
+    "quotes": ["warn", "single"],
+    "@typescript-eslint/no-this-alias": "off",
+    "no-empty-function": "off",
+    "@typescript-eslint/no-empty-function": "off"
   }
 }
